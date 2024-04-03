@@ -57,8 +57,8 @@ func Default() templ.Component {
 	forecast, err := API_test()
 	if err != nil {
 		fmt.Printf("Erreur : %s\n", err)
-		return components.Hello("Erreur : %s", "i")
+		//return components.Hello("Erreur : %s", "i")
 	}
 	temp := strconv.Itoa(int(forecast.Current.Temperature2m))
-	return components.Hello("Go-Meteo", temp)
+	return components.Hello(temp)
 }
