@@ -1,9 +1,11 @@
 package components
 
-templ Hello(name string,temp string, datalist templ.Component) {
-	<div style="color: aliceblue">Hello, { name }</div>
-  <div>la temperature est de , { temp }</div>
-	@datalist
+templ Hello(name string,temp string,ville string, datalist templ.Component) {
+    <div style="color: aliceblue;display:flex;justify-content:center"> la temperature est de { temp }°C à {ville}</div>
+    <div>
+        @datalist
+    </div>
+
 }
 
 templ HelloError(err string) {

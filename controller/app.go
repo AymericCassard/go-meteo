@@ -31,11 +31,13 @@ type ForecastResponse struct {
 	} `json:"current"`
 }
 
-func API_test() (ForecastResponse, error) {
+func GetCurrentTempsCoordonate(long float64, lat float64) (ForecastResponse, error) {
 	var forecastResponse ForecastResponse
-
+	longStr := strconv.Itoa(int(long))
+	latStr := strconv.Itoa(int(lat))
 	//coordonnées d'Angers
-	response, err := http.Get("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m")
+	URL := "https://api.open-meteo.com/v1/forecast?latitude=" + longStr + "&longitude=" + latStr + "&current=temperature_2m"
+	response, err := http.Get(URL)
 	if err != nil {
 		return forecastResponse, fmt.Errorf("Erreur lors de la requête : %s", err)
 	}
@@ -54,12 +56,13 @@ func API_test() (ForecastResponse, error) {
 }
 
 func Default() templ.Component {
-	forecast, err := API_test()
+	forecast, err := GetCurrentTempsCoordonate(52.52, 13.41)
 	if err != nil {
 		fmt.Printf("Erreur : %s\n", err)
 		return components.HelloError(err.Error())
 	}
 	temp := strconv.Itoa(int(forecast.Current.Temperature2m))
+	ville := "Angers"
 	datalist := components.DataList([]string{"Angers", "Angouleme", "Hamburg"})
-	return components.Hello("Go-Meteo", temp, datalist)
+	return components.Hello("Go-Meteo", temp, ville, datalist)
 }
