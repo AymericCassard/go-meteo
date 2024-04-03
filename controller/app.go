@@ -6,5 +6,5 @@ import (
 )
 
 func Default(temp string) templ.Component {
-	return components.Hello("Go-Meteo", temp)
+	return components.Hello(temp)
 }

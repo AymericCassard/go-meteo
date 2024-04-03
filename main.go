@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/a-h/templ"
 	"go-meteo/controller"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -31,13 +31,11 @@ type ForecastResponse struct {
 }
 
 func main() {
-
 	forecast, err := API_test()
 	if err != nil {
 		fmt.Printf("Erreur : %s\n", err)
 		return
 	}
-
 	temp := strconv.Itoa(int(forecast.Current.Temperature2m))
 	index := index(controller.Default(temp))
 	http.Handle("/", templ.Handler(index))
@@ -54,7 +52,7 @@ func API_test() (ForecastResponse, error) {
 	}
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return forecastResponse, fmt.Errorf("Erreur lors de la lecture du corps de la réponse : %s", err)
 	}
