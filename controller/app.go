@@ -102,13 +102,13 @@ func GetCoordonateByCity(city string) (LocationList, error) {
 
 func Default() templ.Component {
 	forecast, err := GetCurrentTempsCoordonate(52.52, 13.41)
-	loca, err := GetCoordonateByCity("Angers")
+	// loca, err := GetCoordonateByCity("Angers")
 	if err != nil {
 		fmt.Printf("Erreur : %s\n", err)
 		return components.HelloError(err.Error())
 	}
 	temp := strconv.Itoa(int(forecast.Current.Temperature2m))
-	ville := "angers"
-	datalist := components.DataList([]string{"" + loca.Results[0].Name + " / " + loca.Results[0].Timezone, "" + loca.Results[1].Name + " / " + loca.Results[1].Timezone, "" + loca.Results[2].Name + " / " + loca.Results[2].Timezone})
-	return components.Hello("Go-Méteo", temp, ville, datalist)
+	ville := "Angers"
+	// datalist := components.DataList([]string{"" + loca.Results[0].Name + " / " + loca.Results[0].Timezone, "" + loca.Results[1].Name + " / " + loca.Results[1].Timezone, "" + loca.Results[2].Name + " / " + loca.Results[2].Timezone})
+	return components.Hello("Go-Méteo", temp, ville)
 }

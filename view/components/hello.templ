@@ -1,11 +1,17 @@
 package components
 
-templ Hello(name string,temp string,ville string, datalist templ.Component) {
-    <div style="color: aliceblue;display:flex;justify-content:center"> la temperature est de { temp }°C à {ville}</div>
-    <div>
-        @datalist
-    </div>
+// <<<<<<< HEAD
+// templ Hello(name string,temp string,ville string, datalist templ.Component) {
+//     <div style="color: aliceblue;display:flex;justify-content:center"> la temperature est de { temp }°C à {ville}</div>
+//     <div>
+//         @datalist
+//     </div>
 
+// =======
+templ Hello(name string,temp string, ville string) {
+  <div style="color: aliceblue;display:flex;justify-content:center">la temperature est de { temp }°C à {ville}</div>
+	@DataList()
+// >>>>>>> 68ff252 (Add htmx / use it to connect datalis)
 }
 
 templ HelloError(err string) {

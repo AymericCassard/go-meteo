@@ -1,14 +1,26 @@
 package components
 
-templ DataList(options []string) {
-  <br/>
-  <div>
-  <input type="text" list="liste-ville" id="choix-ville" name="choix-ville" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+templ DataList() {
+	<div style="display:flex;justify-content:center;">
+		<input
+			type="text"
+			list="liste-ville"
+			id="ville"
+			name="ville"
+			class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+			hx-get="/ville"
+			hx-trigger="input changed delay:500ms"
+			hx-target="#liste-ville"
+		/>
+		<datalist id="liste-ville"></datalist>
+	</div>
+}
 
-  <datalist id="liste-ville">
-  for _, option := range options {
-      <option value={ option }></option>
-  }
-  </datalist>
-  </div>
+//Cities recommendations
+templ DataOption(value, country, latitude, longitude string) {
+	<option
+		value={ value + " (" + country + ")" }
+		latitude={ latitude }
+		longitude={ longitude }
+	></option>
 }
