@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/a-h/templ"
-	"go-meteo/view/components"
+	"go-meteo/controller"
 	"net/http"
 )
 
 func main() {
-	component := components.Hello("Go-Meteo")
+	index := index(controller.Default())
 
-	http.Handle("/", templ.Handler(component))
+	http.Handle("/", templ.Handler(index))
 
 	fmt.Println("Listening on :3000")
 	http.ListenAndServe(":3000", nil)
