@@ -5,6 +5,6 @@ import (
 	"go-meteo/view/components"
 )
 
-func Default() templ.Component {
-	return components.Hello("Go-Meteo")
+func Default(temp string) templ.Component {
+	return components.Hello("Go-Meteo", temp)
 }
