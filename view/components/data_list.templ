@@ -1,0 +1,10 @@
+package components
+
+templ DataList(options []string) {
+  <input type="text" list="liste-ville" id="choix-ville" name="choix-ville" />
+  <datalist id="liste-ville">
+  for _, option := range options {
+      <option value={ option }></option>
+  }
+  </datalist>
+}
