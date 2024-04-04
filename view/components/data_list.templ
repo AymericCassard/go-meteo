@@ -1,8 +1,10 @@
 package components
 
 templ DataList() {
+    <h1  style="color: aliceblue;display:flex;justify-content:center" class="text-2xl font-bold">Recherche par villes</h1>
 	<div style="display:flex;justify-content:center;">
 		<input
+		    style="width: 20em"
 			type="text"
 			list="liste-ville"
 			id="ville"
@@ -22,5 +24,6 @@ templ DataOption(value, country, latitude, longitude string) {
 		value={ value + " (" + country + ")" }
 		latitude={ latitude }
 		longitude={ longitude }
+
 	></option>
 }

@@ -10,6 +10,7 @@ import (
 func main() {
 
 	index := index(controller.Default())
+	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("images/"))))
 	http.Handle("/", templ.Handler(index))
 	http.HandleFunc("/ville", controller.ReturnVilles)
 	fmt.Println("Listening on http://localhost:3000")

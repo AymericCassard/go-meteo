@@ -1,14 +1,8 @@
 package controller
 
 import (
-	"encoding/json"
-	"fmt"
-	"go-meteo/view/components"
-	"io"
-	"net/http"
-	"strconv"
-
 	"github.com/a-h/templ"
+	"go-meteo/view/components"
 )
 
 type ForecastResponse struct {
@@ -56,59 +50,6 @@ type LocationList struct {
 	Results []Location
 }
 
-func GetCurrentTempsCoordonate(long float64, lat float64) (ForecastResponse, error) {
-	var forecastResponse ForecastResponse
-	longStr := strconv.Itoa(int(long))
-	latStr := strconv.Itoa(int(lat))
-	URL := "https://api.open-meteo.com/v1/forecast?latitude=" + longStr + "&longitude=" + latStr + "&current=temperature_2m"
-	response, err := http.Get(URL)
-	if err != nil {
-		return forecastResponse, fmt.Errorf("Erreur lors de la requête : %s", err)
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return forecastResponse, fmt.Errorf("Erreur lors de la lecture du corps de la réponse : %s", err)
-	}
-
-	err = json.Unmarshal(body, &forecastResponse)
-	if err != nil {
-		return forecastResponse, fmt.Errorf("Erreur lors du décodage JSON : %s", err)
-	}
-	return forecastResponse, nil
-}
-
-func GetCoordonateByCity(city string) (LocationList, error) {
-	var location LocationList
-	URL := "https://geocoding-api.open-meteo.com/v1/search?name=" + city + "&count=5&language=fr"
-	response, err := http.Get(URL)
-	if err != nil {
-		return location, fmt.Errorf("Erreur lors de la requête : %s", err)
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return location, fmt.Errorf("Erreur lors de la lecture du corps de la réponse : %s", err)
-	}
-
-	err = json.Unmarshal(body, &location)
-	if err != nil {
-		return location, fmt.Errorf("Erreur lors du décodage JSON : %s", err)
-	}
-	return location, nil
-}
-
 func Default() templ.Component {
-	forecast, err := GetCurrentTempsCoordonate(52.52, 13.41)
-	// loca, err := GetCoordonateByCity("Angers")
-	if err != nil {
-		fmt.Printf("Erreur : %s\n", err)
-		return components.HelloError(err.Error())
-	}
-	temp := strconv.Itoa(int(forecast.Current.Temperature2m))
-	ville := "Angers"
-	// datalist := components.DataList([]string{"" + loca.Results[0].Name + " / " + loca.Results[0].Timezone, "" + loca.Results[1].Name + " / " + loca.Results[1].Timezone, "" + loca.Results[2].Name + " / " + loca.Results[2].Timezone})
-	return components.Hello("Go-Méteo", temp, ville)
+	return components.Hello("Go-Méteo")
 }
