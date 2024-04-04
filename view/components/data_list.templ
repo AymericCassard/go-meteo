@@ -14,16 +14,32 @@ templ DataList() {
 			hx-trigger="input changed delay:500ms"
 			hx-target="#liste-ville"
 		/>
-		<datalist id="liste-ville"></datalist>
+		<!--<datalist id="liste-ville"></datalist> -->
 	</div>
+	<div id="liste-ville" class="flex justify-center gap-4"></div> 
 }
 
 //Cities recommendations
 templ DataOption(value, country, latitude, longitude string) {
 	<option
-		value={ value + " (" + country + ")" }
 		latitude={ latitude }
 		longitude={ longitude }
-
-	></option>
+	>
+	</option>
 }
+
+templ VilleButton(value, country, latitude, longitude string) {
+	<button
+		hx-get={"/temp?lat=" + latitude + "&lon=" + longitude }
+		hx-trigger="click"
+		hx-target="#weather-report"
+		hx-params="none"
+		class="bg-slate-50 text-gray-800 rounded p-2"
+	>
+		{ value + " (" + country + ")" }
+	</button>
+}
+
+// hx-get={"/temp?lat=" + latitude + "&lon=" + longitude }
+// hx-trigger="click"
+// hx-params="none"
