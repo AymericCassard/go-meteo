@@ -17,21 +17,6 @@ type VillesReponses struct {
 	} `json:"results"`
 }
 
-func api_getMatchingVilles(sent string) (VillesReponses, error) {
-	var villeResponse VillesReponses
-	response, err := http.Get("https://geocoding-api.open-meteo.com/v1/search?name=" + sent + "&count=5&language=fr")
-	if err != nil {
-		return villeResponse, err
-	}
-	defer response.Body.Close()
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return villeResponse, err
-	}
-	err = json.Unmarshal(body, &villeResponse)
-	return villeResponse, nil
-}
-
 type HourlyTemps struct {
 	Latitude             float64 `json:"latitude"`
 	Longitude            float64 `json:"longitude"`
@@ -48,6 +33,21 @@ type HourlyTemps struct {
 		Time          []string  `json:"time"`
 		Temperature2M []float64 `json:"temperature_2m"`
 	} `json:"hourly"`
+}
+
+func api_getMatchingVilles(sent string) (VillesReponses, error) {
+	var villeResponse VillesReponses
+	response, err := http.Get("https://geocoding-api.open-meteo.com/v1/search?name=" + sent + "&count=5&language=fr")
+	if err != nil {
+		return villeResponse, err
+	}
+	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return villeResponse, err
+	}
+	err = json.Unmarshal(body, &villeResponse)
+	return villeResponse, nil
 }
 
 func api_getVillesTemps(latitude, longitude string) (HourlyTemps, error) {
@@ -77,12 +77,6 @@ func ReturnVilles(w http.ResponseWriter, r *http.Request) {
 			fmt.Sprintf("%f", result.Latitude),
 			fmt.Sprintf("%f", result.Longitude),
 		).Render(r.Context(), w)
-		// components.DataOption(
-		// 	result.Name,
-		// 	result.Country,
-		// 	fmt.Sprintf("%f", result.Latitude),
-		// 	fmt.Sprintf("%f", result.Longitude),
-		// ).Render(r.Context(), w)
 	}
 }
 
