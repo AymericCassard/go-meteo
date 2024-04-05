@@ -1,0 +1,48 @@
+package components
+
+import "time"
+import "fmt"
+
+templ WeatherTable(temps []float64) {
+	<div class="rounded overflow-hidden">
+		<table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded">
+			<thead class="text-xs text-gray-700 uppercase border-b-2 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+				<tr>
+					<th class="px-6 py-3">{ time.Now().Weekday().String() }</th>
+					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24).Weekday().String() }</th>
+					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 2).Weekday().String() }</th>
+					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 3).Weekday().String() }</th>
+					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 4).Weekday().String() }</th>
+					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 5).Weekday().String() }</th>
+					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 6).Weekday().String() }</th>
+				</tr>
+			</thead>
+			<tbody>
+				@WeatherLines(temps)
+			</tbody>
+		</table>
+	</div>
+}
+
+func renderTempsAvg(temps []float64) []float64 {
+	avgs := make([]float64, len(temps)/24)
+	sum := 0.0
+	for i, temp := range temps {
+		if (i+1)%24 == 0 && i != 0 {
+			avgs[i/24] = sum / float64(24)
+			sum = 0.0
+		}
+		sum += temp
+	}
+	return avgs
+}
+
+templ WeatherLines(temps []float64) {
+	<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+		for _, tempAvg := range renderTempsAvg(temps) {
+			<td class="px-6 py-4 text-center">
+				{ fmt.Sprintf("%.2f°C", tempAvg) }
+			</td>
+		}
+	</tr>
+}

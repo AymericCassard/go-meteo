@@ -52,7 +52,7 @@ type HourlyTemps struct {
 
 func api_getVillesTemps(latitude, longitude string) (HourlyTemps, error) {
 	var hourlyTemps HourlyTemps
-	response, err := http.Get("https://api.open-meteo.com/v1/forecast?latitude=47.4716&longitude=-0.552&hourly=temperature_2m")
+	response, err := http.Get("https://api.open-meteo.com/v1/forecast?latitude=" + latitude + "&longitude=" + longitude + "&hourly=temperature_2m")
 	if err != nil {
 		return hourlyTemps, err
 	}
@@ -91,8 +91,5 @@ func ReturnHourlyTemps(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
-	for i, result := range temps.Hourly.Time {
-		fmt.Fprintf(w, "Time: %s /", result)
-		fmt.Fprintf(w, " Temp: %f\n", temps.Hourly.Temperature2M[i])
-	}
+	components.WeatherTable(temps.Hourly.Temperature2M).Render(r.Context(), w)
 }

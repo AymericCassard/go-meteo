@@ -32,7 +32,7 @@ templ VilleButton(value, country, latitude, longitude string) {
 	<button
 		hx-get={"/temp?lat=" + latitude + "&lon=" + longitude }
 		hx-trigger="click"
-		hx-target="#weather-report"
+		hx-target="#weather-container"
 		hx-params="none"
 		class="bg-slate-50 text-gray-800 rounded p-2"
 	>
