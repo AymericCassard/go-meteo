@@ -1,11 +1,13 @@
 package controller
 
 import (
+	// "context"
 	"encoding/json"
 	"fmt"
 	"go-meteo/view/components"
 	"io"
 	"net/http"
+	// "github.com/a-h/templ"
 )
 
 type VillesReponses struct {
@@ -85,5 +87,6 @@ func ReturnHourlyTemps(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
+	// full_comp, err = templ.ToGoHTML(context.Background(), components.DataList())
 	components.WeatherTable(temps.Hourly.Temperature2M).Render(r.Context(), w)
 }

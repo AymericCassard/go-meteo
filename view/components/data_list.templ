@@ -1,22 +1,27 @@
 package components
 
 templ DataList() {
-    <h1  style="color: aliceblue;display:flex;justify-content:center" class="text-2xl font-bold">Recherche par villes</h1>
-	<div style="display:flex;justify-content:center;">
-		<input
-		    style="width: 20em"
-			type="text"
-			list="liste-ville"
-			id="ville"
-			name="ville"
-			class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-			hx-get="/ville"
-			hx-trigger="input changed delay:500ms"
-			hx-target="#liste-ville"
-		/>
+	<h1 style="color: aliceblue;display:flex;justify-content:center" class="text-2xl font-bold">Recherche par villes</h1>
+	<div
+		class="flex flex-col items-center"
+		hx-swap-oob="true"
+	>
+		<div>
+			<input
+				style="width: 20em"
+				type="text"
+				list="liste-ville"
+				id="ville"
+				name="ville"
+				class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+				hx-get="/ville"
+				hx-trigger="input changed delay:500ms"
+				hx-target="#liste-ville"
+			/>
+			<div id="liste-ville" class="flex flex-col items-stretch rounded overflow-hidden"></div>
+		</div>
 		<!--<datalist id="liste-ville"></datalist> -->
 	</div>
-	<div id="liste-ville" class="flex justify-center gap-4"></div> 
 }
 
 //Cities recommendations
@@ -24,13 +29,13 @@ templ DataOption(value, country, latitude, longitude string) {
 	<option
 		latitude={ latitude }
 		longitude={ longitude }
-	>
-	</option>
+	></option>
 }
 
 templ VilleButton(value, country, latitude, longitude string) {
-	<button style="background-color: #79D4FD" class="hover:bg-blue-700 text-gray-600 font-bold py-2 px-4 rounded-full"
-		hx-get={"/temp?lat=" + latitude + "&lon=" + longitude }
+	<button
+		class="hover:bg-neutral-300 bg-white text-gray-600 font-bold py-2 px-4"
+		hx-get={ "/temp?lat=" + latitude + "&lon=" + longitude }
 		hx-trigger="click"
 		hx-target="#weather-container"
 		hx-params="none"
@@ -39,4 +44,3 @@ templ VilleButton(value, country, latitude, longitude string) {
 		{ value + " (" + country + ")" }
 	</button>
 }
-
