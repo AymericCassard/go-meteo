@@ -31,7 +31,7 @@ func index(view templ.Component) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body><script>\n\t\t\tconst searchZone = document.querySelector('#search-zone');\n\t\t\tconst toHide = document.querySelector('#liste-ville');\n\t\t\tdocument.body.addEventListener('click', (event) => {\n\t\t\t\tconsole.log(\"in\");\n\t\t\t\tconsole.log(event.target);\n\t\t\t\tconsole.log(toHide.contains(event.target))\n\t\t\t\tif(!searchZone.contains(event.target)) {\n\t\t\t\t\ttoHide.style.display = 'none';\n\t\t\t\t} else {\n\t\t\t\t\ttoHide.style.display = null;\n\t\t\t\t}\n\t\t\t})\n\t\t</script></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body><script>\n\t\t\tconst searchZone = document.querySelector('#search-zone');\n\t\t\tconst toHide = document.querySelector('#liste-ville');\n\t\t\tdocument.body.addEventListener('click', (event) => {\n\t\t\t\tif(!searchZone.contains(event.target)) {\n\t\t\t\t\ttoHide.style.display = 'none';\n\t\t\t\t} else {\n\t\t\t\t\ttoHide.style.display = null;\n\t\t\t\t}\n\t\t\t})\n\t\t</script></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -3,6 +3,12 @@ package components
 import "time"
 import "fmt"
 
+templ VilleLabel(name, country string) {
+	<h2 class="text-xl">
+		{ name+ " (" + country + ")" }
+	</h2>
+}
+
 templ WeatherTable(temps []float64) {
 	<div class="rounded overflow-hidden">
 		<table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded">

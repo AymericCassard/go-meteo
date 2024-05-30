@@ -91,5 +91,6 @@ func ReturnHourlyTemps(w http.ResponseWriter, r *http.Request) {
 	}
 	// full_comp, err = templ.ToGoHTML(context.Background(), components.DataList())
 	components.DataList().Render(r.Context(), w)
+	components.VilleLabel(r.URL.Query().Get("name"), r.URL.Query().Get("country")).Render(r.Context(), w)
 	components.WeatherTable(temps.Hourly.Temperature2M).Render(r.Context(), w)
 }
