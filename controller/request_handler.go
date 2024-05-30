@@ -72,14 +72,16 @@ func ReturnVilles(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
-	for _, result := range villes.Results {
-		components.VilleButton(
-			result.Name,
-			result.Country,
-			fmt.Sprintf("%f", result.Latitude),
-			fmt.Sprintf("%f", result.Longitude),
-		).Render(r.Context(), w)
+	buttonValues := make([]components.ButtonValues, len(villes.Results))
+	for i, result := range villes.Results {
+		buttonValues[i] = components.ButtonValues{
+			Value:     result.Name,
+			Country:   result.Country,
+			Latitude:  fmt.Sprintf("%f", result.Latitude),
+			Longitude: fmt.Sprintf("%f", result.Longitude),
+		}
 	}
+	components.VilleButtonContainer(buttonValues).Render(r.Context(), w)
 }
 
 func ReturnHourlyTemps(w http.ResponseWriter, r *http.Request) {
@@ -88,5 +90,6 @@ func ReturnHourlyTemps(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, err.Error())
 	}
 	// full_comp, err = templ.ToGoHTML(context.Background(), components.DataList())
+	components.DataList().Render(r.Context(), w)
 	components.WeatherTable(temps.Hourly.Temperature2M).Render(r.Context(), w)
 }

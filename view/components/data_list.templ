@@ -1,12 +1,20 @@
 package components
 
+type ButtonValues struct {
+	Value     string
+	Country   string
+	Latitude  string
+	Longitude string
+}
+
 templ DataList() {
-	<h1 style="color: aliceblue;display:flex;justify-content:center" class="text-2xl font-bold">Recherche par villes</h1>
 	<div
 		class="flex flex-col items-center"
-		hx-swap-oob="true"
+		id="datalist"
+		hx-swap-oob="outerHTML"
 	>
-		<div>
+		<h1 style="color: aliceblue;display:flex;justify-content:center" class="text-2xl font-bold">Recherche par villes</h1>
+		<div id="search-zone">
 			<input
 				style="width: 20em"
 				type="text"
@@ -18,18 +26,10 @@ templ DataList() {
 				hx-trigger="input changed delay:500ms"
 				hx-target="#liste-ville"
 			/>
-			<div id="liste-ville" class="flex flex-col items-stretch rounded overflow-hidden"></div>
+			<div id="liste-ville"></div>
 		</div>
 		<!--<datalist id="liste-ville"></datalist> -->
 	</div>
-}
-
-//Cities recommendations
-templ DataOption(value, country, latitude, longitude string) {
-	<option
-		latitude={ latitude }
-		longitude={ longitude }
-	></option>
 }
 
 templ VilleButton(value, country, latitude, longitude string) {
@@ -43,4 +43,23 @@ templ VilleButton(value, country, latitude, longitude string) {
 	>
 		{ value + " (" + country + ")" }
 	</button>
+}
+
+templ VilleButtonContainer(buttonsValues []ButtonValues) {
+	<div
+		class="flex flex-col items-stretch rounded overflow-hidden"
+	>
+		for _, buttonValue := range buttonsValues {
+			<button
+				class="hover:bg-neutral-300 bg-white text-gray-600 font-bold py-2 px-4"
+				hx-get={ "/temp?lat=" + buttonValue.Latitude + "&lon=" + buttonValue.Longitude }
+				hx-trigger="click"
+				hx-target="#weather-container"
+				hx-params="none"
+				class="bg-slate-50 text-gray-800 rounded p-2"
+			>
+				{ buttonValue.Value + " (" + buttonValue.Country + ")" }
+			</button>
+		}
+	</div>
 }

@@ -1,6 +1,5 @@
 package main
 
-
 templ index(view templ.Component) {
 	<!DOCTYPE html>
 	<html>
@@ -20,5 +19,16 @@ templ index(view templ.Component) {
 			</h1>
 			@view
 		</body>
+		<script>
+			const searchZone = document.querySelector('#search-zone');
+			const toHide = document.querySelector('#liste-ville');
+			document.body.addEventListener('click', (event) => {
+				if(!searchZone.contains(event.target)) {
+					toHide.style.display = 'none';
+				} else {
+					toHide.style.display = null;
+				}
+			})
+		</script>
 	</html>
 }
