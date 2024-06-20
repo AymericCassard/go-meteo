@@ -9,46 +9,140 @@ templ VilleLabel(name, country string) {
 	</h2>
 }
 
-templ WeatherTable(temps []float64) {
+templ WeatherTable(dailyTemps [][]float64, tempsAvgs []float64) {
 	<div class="rounded overflow-hidden">
 		<table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded">
-			<thead class="text-xs text-gray-700 uppercase border-b-2 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-				<tr>
-					<th class="px-6 py-3">{ time.Now().Weekday().String() }</th>
-					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24).Weekday().String() }</th>
-					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 2).Weekday().String() }</th>
-					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 3).Weekday().String() }</th>
-					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 4).Weekday().String() }</th>
-					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 5).Weekday().String() }</th>
-					<th class="px-6 py-3">{ time.Now().Add(time.Hour * 24 * 6).Weekday().String() }</th>
+			<thead
+				class="text-xs text-gray-700 uppercase border-b-2 bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+			>
+				<tr
+					id="day-labels-container"
+				>
+					for i := 0 ; i < 7 ; i++ {
+						@dayLabel(i)
+					}
 				</tr>
 			</thead>
 			<tbody>
-				@WeatherLines(temps)
+				@WeatherLines(tempsAvgs)
+				<tr
+					id="hours-th"
+					class="text-xs text-gray-700 uppercase border-b-2 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 text-center hidden"
+				>
+					for j := 0 ; j < 7 ; j++ {
+						<td class="px-6 py-3">
+							{ fmt.Sprint(time.Now().Hour() + j) } H
+						</td>
+					}
+				</tr>
+			</tbody>
+			<tbody id="hourly-lines-container">
+				@WeatherHourlyLines(dailyTemps)
 			</tbody>
 		</table>
 	</div>
 }
 
-func renderTempsAvg(temps []float64) []float64 {
-	avgs := make([]float64, len(temps)/24)
-	sum := 0.0
-	for i, temp := range temps {
-		if (i+1)%24 == 0 && i != 0 {
-			avgs[i/24] = sum / float64(24)
-			sum = 0.0
+func getCurrentDayString(index int) string {
+	if index == 0 {
+		return time.Now().Weekday().String()
+	} else {
+		diff := time.Duration(24*index) * time.Hour
+		return time.Now().Add(diff).Weekday().String()
+	}
+}
+
+script weatherOnclick(elementId string, index int) {
+	document.getElementById("hours-th").classList.remove("hidden");
+	for (const dayLabel of document.getElementById("day-labels-container").children) {
+		dayLabel.classList.remove("bg-amber-200")
+	}
+	for (const hourlyLine of document.getElementById("hourly-lines-container").children) {
+		if (!hourlyLine.classList.contains("hidden")) {
+			hourlyLine.classList.add("hidden");
 		}
-		sum += temp
+	}
+	const targetId = `day-${index}-temps`;
+	const target = document.getElementById(targetId);
+	document.getElementById(elementId).classList.add("bg-amber-200");
+	target.classList.remove("hidden");
+}
+
+templ dayLabel(index int) {
+	<th
+		id={ fmt.Sprintf("day-%d-label", index) }
+		class="px-6 py-3"
+		onClick={ weatherOnclick(fmt.Sprintf("day-%d-label", index), index) }
+	>{ getCurrentDayString(index) }</th>
+}
+
+//return arrays of hourly values for 7 days
+func getDailyTemps(temps []float64) [][]float64 {
+	days := make([][]float64, len(temps)/24)
+	var dailyValues []float64
+	for i, temp := range temps {
+		dailyValues = append(dailyValues, temp)
+		if (i+1)%24 == 0 && i != 0 {
+			days[i/24] = dailyValues
+			dailyValues = nil
+		}
+	}
+	return days
+}
+
+func temp24hAvgs(dailyValues [][]float64) []float64 {
+	avgs := make([]float64, len(dailyValues))
+	for i, day := range dailyValues {
+		sum := 0.0
+		for _, temp := range day {
+			sum += temp
+		}
+		avgs[i] = sum / float64(len(day))
 	}
 	return avgs
 }
 
-templ WeatherLines(temps []float64) {
+templ WeatherLines(tempsAvgs []float64) {
 	<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-		for _, tempAvg := range renderTempsAvg(temps) {
-			<td class="px-6 py-4 text-center">
+		for _, tempAvg := range tempsAvgs {
+			<th class="px-6 py-4 text-center">
 				{ fmt.Sprintf("%.2f°C", tempAvg) }
-			</td>
+			</th>
 		}
 	</tr>
+}
+
+func getNext7HoursTemps(hourlyTemps [][]float64, day, start int) [7]float64 {
+	i := day
+	j := start
+	var nextTemps [7]float64
+	for k := 0; k < 7; k++ {
+		//when hour is more than 23, take from next day
+		if j > 23 {
+			j = 0
+			i++
+		}
+		//failsafe in case of next week access
+		//TODO: really serve next weeks temps or ignore them
+		if i > 6 {
+			i = 6
+		}
+		nextTemps[k] = hourlyTemps[i][j]
+		j++
+	}
+	return nextTemps
+}
+
+templ WeatherHourlyLines(hourlyTemps [][]float64) {
+	for i := 0; i < len(hourlyTemps); i++ {
+		<tr
+			id={ fmt.Sprintf("day-%d-temps", i) }
+			class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hidden"
+		>
+			<!-- 7 is the number of columns -->
+			for _, temp := range(getNext7HoursTemps(hourlyTemps, i, time.Now().Hour())) {
+				<td class="text-center">{ fmt.Sprintf("%.2f°C", temp) } </td>
+			}
+		</tr>
+	}
 }

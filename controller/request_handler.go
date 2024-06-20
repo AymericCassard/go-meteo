@@ -37,6 +37,32 @@ type HourlyTemps struct {
 	} `json:"hourly"`
 }
 
+// return arrays of hourly values for 7 days
+func getDailyTemps(temps []float64) [][]float64 {
+	days := make([][]float64, len(temps)/24)
+	var dailyValues []float64
+	for i, temp := range temps {
+		dailyValues = append(dailyValues, temp)
+		if (i+1)%24 == 0 && i != 0 {
+			days[i/24] = dailyValues
+			dailyValues = nil
+		}
+	}
+	return days
+}
+
+func getTemp24hAvgs(dailyValues [][]float64) []float64 {
+	avgs := make([]float64, len(dailyValues))
+	for i, day := range dailyValues {
+		sum := 0.0
+		for _, temp := range day {
+			sum += temp
+		}
+		avgs[i] = sum / float64(len(day))
+	}
+	return avgs
+}
+
 func api_getMatchingVilles(sent string) (VillesReponses, error) {
 	var villeResponse VillesReponses
 	response, err := http.Get("https://geocoding-api.open-meteo.com/v1/search?name=" + sent + "&count=5&language=fr")
@@ -90,7 +116,9 @@ func ReturnHourlyTemps(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, err.Error())
 	}
 	// full_comp, err = templ.ToGoHTML(context.Background(), components.DataList())
+	dailyTemps := getDailyTemps(temps.Hourly.Temperature2M)
+	tempsAvgs := getTemp24hAvgs(dailyTemps)
 	components.DataList().Render(r.Context(), w)
 	components.VilleLabel(r.URL.Query().Get("name"), r.URL.Query().Get("country")).Render(r.Context(), w)
-	components.WeatherTable(temps.Hourly.Temperature2M).Render(r.Context(), w)
+	components.WeatherTable(dailyTemps, tempsAvgs).Render(r.Context(), w)
 }
