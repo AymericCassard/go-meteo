@@ -10,11 +10,13 @@ import "context"
 import "io"
 import "bytes"
 
+import "fmt"
+
 type ButtonValues struct {
-	Value     string
-	Country   string
-	Latitude  string
-	Longitude string
+	Value           string
+	AdditionnalInfo string
+	Latitude        string
+	Longitude       string
 }
 
 func DataList() templ.Component {
@@ -41,7 +43,7 @@ func DataList() templ.Component {
 	})
 }
 
-func VilleButton(value, country, latitude, longitude string) templ.Component {
+func VilleButton(value, postcode, latitude, longitude string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -61,7 +63,7 @@ func VilleButton(value, country, latitude, longitude string) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs("/temp?lat=" + latitude + "&lon=" + longitude)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 38, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 40, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -72,9 +74,9 @@ func VilleButton(value, country, latitude, longitude string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(value + " (" + country + ")")
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(value + " (" + postcode + ")")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 44, Col: 32}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 46, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -89,6 +91,16 @@ func VilleButton(value, country, latitude, longitude string) templ.Component {
 		}
 		return templ_7745c5c3_Err
 	})
+}
+
+func getVilleButtonString(buttonValue ButtonValues) string {
+	return fmt.Sprintf(
+		"/temp?lat=%s&lon=%s&name=%s&addinfo=%s",
+		buttonValue.Latitude,
+		buttonValue.Longitude,
+		buttonValue.Value,
+		buttonValue.AdditionnalInfo,
+	)
 }
 
 func VilleButtonContainer(buttonsValues []ButtonValues) templ.Component {
@@ -114,9 +126,9 @@ func VilleButtonContainer(buttonsValues []ButtonValues) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
-			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs("/temp?lat=" + buttonValue.Latitude + "&lon=" + buttonValue.Longitude + "&name=" + buttonValue.Value + "&country=" + buttonValue.Country)
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(getVilleButtonString(buttonValue))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 55, Col: 149}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 67, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -127,9 +139,9 @@ func VilleButtonContainer(buttonsValues []ButtonValues) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(buttonValue.Value + " (" + buttonValue.Country + ")")
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(buttonValue.Value + " (" + buttonValue.AdditionnalInfo + ")")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 61, Col: 58}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/components/data_list.templ`, Line: 73, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {

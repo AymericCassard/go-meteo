@@ -1,10 +1,12 @@
 package components
 
+import "fmt"
+
 type ButtonValues struct {
-	Value     string
-	Country   string
-	Latitude  string
-	Longitude string
+	Value           string
+	AdditionnalInfo string
+	Latitude        string
+	Longitude       string
 }
 
 templ DataList() {
@@ -32,7 +34,7 @@ templ DataList() {
 	</div>
 }
 
-templ VilleButton(value, country, latitude, longitude string) {
+templ VilleButton(value, postcode, latitude, longitude string) {
 	<button
 		class="hover:bg-neutral-300 bg-white text-gray-600 font-bold py-2 px-4"
 		hx-get={ "/temp?lat=" + latitude + "&lon=" + longitude }
@@ -41,8 +43,18 @@ templ VilleButton(value, country, latitude, longitude string) {
 		hx-params="none"
 		class="bg-slate-50 text-gray-800 rounded p-2"
 	>
-		{ value + " (" + country + ")" }
+		{ value + " (" + postcode + ")" }
 	</button>
+}
+
+func getVilleButtonString(buttonValue ButtonValues) string {
+	return fmt.Sprintf(
+		"/temp?lat=%s&lon=%s&name=%s&addinfo=%s",
+		buttonValue.Latitude,
+		buttonValue.Longitude,
+		buttonValue.Value,
+		buttonValue.AdditionnalInfo,
+	)
 }
 
 templ VilleButtonContainer(buttonsValues []ButtonValues) {
@@ -52,13 +64,13 @@ templ VilleButtonContainer(buttonsValues []ButtonValues) {
 		for _, buttonValue := range buttonsValues {
 			<button
 				class="hover:bg-neutral-300 bg-white text-gray-600 font-bold py-2 px-4"
-				hx-get={ "/temp?lat=" + buttonValue.Latitude + "&lon=" + buttonValue.Longitude + "&name=" + buttonValue.Value + "&country=" + buttonValue.Country }
+				hx-get={ getVilleButtonString(buttonValue) }
 				hx-trigger="click"
 				hx-target="#weather-container"
 				hx-params="none"
 				class="bg-slate-50 text-gray-800 rounded p-2"
 			>
-				{ buttonValue.Value + " (" + buttonValue.Country + ")" }
+					{ buttonValue.Value + " (" + buttonValue.AdditionnalInfo + ")" }
 			</button>
 		}
 	</div>

@@ -3,9 +3,9 @@ package components
 import "time"
 import "fmt"
 
-templ VilleLabel(name, country string) {
+templ VilleLabel(name, additionnalInfo string) {
 	<h2 class="text-xl">
-		{ name+ " (" + country + ")" }
+			{ name+ " (" + additionnalInfo + ")" }
 	</h2>
 }
 
@@ -71,7 +71,7 @@ script weatherOnclick(elementId string, index int) {
 templ dayLabel(index int) {
 	<th
 		id={ fmt.Sprintf("day-%d-label", index) }
-		class="px-6 py-3"
+		class="px-6 py-3 cursor-pointer"
 		onClick={ weatherOnclick(fmt.Sprintf("day-%d-label", index), index) }
 	>{ getCurrentDayString(index) }</th>
 }
